@@ -1,6 +1,6 @@
-name: ServiMercado
-author: ServiCraft
-version: 1.0
+name: Servimercado
+author: Servicraft
+version: ${project.version}
 main: org.servicraft.servimercado.EventClass
 commands:
     mercado:
