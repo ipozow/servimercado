@@ -1,0 +1,8 @@
+name: ServiMercado
+author: ServiCraft
+version: 1.0
+main: me.sc.mercado.EventClass
+commands:
+    mercado:
+        description: Comando principal
+        usage: /mercado
