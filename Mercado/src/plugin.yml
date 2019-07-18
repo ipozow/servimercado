@@ -1,7 +1,7 @@
 name: ServiMercado
 author: ServiCraft
 version: ${project.version}
-main: me.sc.mercado.EventClass
+main: org.servicraft.servimercado.EventClass
 commands:
     mercado:
         description: Comando principal
