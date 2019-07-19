@@ -2,6 +2,7 @@ name: Servimercado
 author: Servicraft
 version: ${project.version}
 main: org.servicraft.servimercado.EventClass
+depend: [Vault]
 commands:
     mercado:
         description: Comando principal
