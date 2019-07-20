@@ -6,3 +6,9 @@ commands:
     mercado:
         description: Comando principal
         usage: /mercado
+    sociedad:
+        description: Uso exclusivo para sociedades
+        usage: /sociedad
+    gremio:
+        description: Uso exclusivo para gremios
+        usage: /gremio
