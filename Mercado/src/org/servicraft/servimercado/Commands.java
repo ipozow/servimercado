@@ -113,10 +113,9 @@ public class Commands implements CommandExecutor {
                             } else {
                                 
                                 player.sendMessage(ChatColor.RED + "No tienes dinero suficiente!");
+                                return true;
                                 
                             }
-                            
-                            return true;
                             
                     } else {
                             
@@ -142,16 +141,15 @@ public class Commands implements CommandExecutor {
                     } else {
                         
                         player.sendMessage(ChatColor.RED + "Sobran argumentos!");
-                        
+                        return true;
                     }
-                    
-                    return true;
                     
                 } else if(args[0].equalsIgnoreCase("invitar")) {
                     
                     if(args.length < 3){
                         
                         player.sendMessage(ChatColor.RED + "Faltan argumentos!");
+                        return true;
                         
                     } else if(args.length == 3) {
                         
@@ -160,13 +158,23 @@ public class Commands implements CommandExecutor {
                             
                             
                             if (EventClass.plugin3.orgcfg.contains("jugadores." + player.getName() + ".sociedad")) {
-                                
-                                if (player.getServer().getPlayer(args[2]) != null) {
-                                    if (!args[2].equals(player.getName())) {
-                                        
-                                        if(!EventClass.plugin3.orgcfg.contains("jugadores." + args[2] + ".sociedad")) {
+                                Player target = player.getServer().getPlayer(args[2]);
+                                if (target == null) {
+                                    player.sendMessage(ChatColor.RED + "El jugador no está conectado!");
+                                    return true;
+                                } else {
+                                    if (!target.getName().equals(player.getName())) {
+                                    if(!EventClass.plugin3.orgcfg.contains("jugadores." + target.getName() + ".sociedad")) {
                                             
-                                            List<String> cfg = (List<String>)EventClass.plugin3.orgcfg.getList("jugadores." + args[2] + ".InvSoc");
+                                            List<String> cfg = (List<String>)EventClass.plugin3.orgcfg.getList("jugadores." + target.getName() + ".InvSoc");
+                                            int value = 0;
+                                            String sss = EventClass.plugin3.orgcfg.getString("jugadores." + player.getName() + ".sociedad");
+                                            for (String each : cfg) {
+                                                if (each.equals(sss)) {
+                                                    value = 1;
+                                                }
+                                            }
+                                            if (value == 0) {
                                             String soc = EventClass.plugin3.orgcfg.getString("jugadores." + player.getName() + ".sociedad");
                                             cfg.add(soc);
                                             EventClass.plugin3.getConfig().set("List", cfg);
@@ -175,20 +183,24 @@ public class Commands implements CommandExecutor {
                                             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Se ha guardado exitósamente organizations.yml");
                                             } catch (IOException e) {
                                             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "No ha podido guardar organizations.yml");
+                                            target.sendMessage(ChatColor.AQUA + "Has sido invitado a la sociedad " + ChatColor.GOLD + sss);
                                             }
                                             return true;
+                                            } else {
+                                                player.sendMessage(ChatColor.RED + "Este jugador ya tiene una invitación para tu sociedad!");
+                                                return true;
+                                            }
+                                            
+                                            
                                         } else {
                                             player.sendMessage(ChatColor.RED + "Este jugador ya pertenece a una sociedad!");
                                             return true;
                                         }
-                                        
+                                    
                                     } else {
-                                        player.sendMessage(ChatColor.RED + "No puedes invitarte a tí mismo!");
+                                        player.sendMessage(ChatColor.RED + "No puedes invitarte a ti mismo!");
                                         return true;
                                     }
-                                } else {
-                                    player.sendMessage(ChatColor.RED + "El jugador no está conectado!");
-                                    return true;
                                 }
                                 
                                 
@@ -203,36 +215,49 @@ public class Commands implements CommandExecutor {
                         } else if (args[1].equalsIgnoreCase("gremio")) {
                             
                             if (EventClass.plugin3.orgcfg.contains("jugadores." + player.getName() + ".gremio")) {
-                                
-                                if (player.getServer().getPlayer(args[2]) != null) {
-                                    if (!args[2].equals(player.getName())) {
-                                        
-                                        if(!EventClass.plugin3.orgcfg.contains("jugadores." + args[2] + ".gremio")) {
+                                Player target = player.getServer().getPlayer(args[2]);
+                                if (target == null) {
+                                    player.sendMessage(ChatColor.RED + "El jugador no está conectado!");
+                                    return true;
+                                } else {
+                                    if (!target.getName().equals(player.getName())) {
+                                    if(!EventClass.plugin3.orgcfg.contains("jugadores." + target.getName() + ".gremio")) {
                                             
-                                            List<String> cfg = (List<String>)EventClass.plugin3.orgcfg.getList("jugadores." + args[2] + ".InvGre");
-                                            String gre = EventClass.plugin3.orgcfg.getString("jugadores." + player.getName() + ".gremio");
-                                            cfg.add(gre);
+                                            List<String> cfg = (List<String>)EventClass.plugin3.orgcfg.getList("jugadores." + target.getName() + ".InvGre");
+                                            int value = 0;
+                                            String sss = EventClass.plugin3.orgcfg.getString("jugadores." + player.getName() + ".gremio");
+                                            for (String each : cfg) {
+                                                if (each.equals(sss)) {
+                                                    value = 1;
+                                                }
+                                            }
+                                            if (value == 0) {
+                                            String soc = EventClass.plugin3.orgcfg.getString("jugadores." + player.getName() + ".gremio");
+                                            cfg.add(soc);
                                             EventClass.plugin3.getConfig().set("List", cfg);
                                             try {
                                             EventClass.plugin3.orgcfg.save(EventClass.plugin3.orgfile);
                                             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Se ha guardado exitósamente organizations.yml");
                                             } catch (IOException e) {
                                             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "No ha podido guardar organizations.yml");
+                                            target.sendMessage(ChatColor.AQUA + "Has sido invitado a el gremio " + ChatColor.GOLD + sss);
                                             }
-                                            player.sendMessage(ChatColor.AQUA + "Has invitado a " + args[2]);
                                             return true;
+                                            } else {
+                                                player.sendMessage(ChatColor.RED + "Este jugador ya tiene una invitación para tu gremio!");
+                                                return true;
+                                            }
+                                            
+                                            
                                         } else {
                                             player.sendMessage(ChatColor.RED + "Este jugador ya pertenece a un gremio!");
                                             return true;
                                         }
-                                        
+                                    
                                     } else {
-                                        player.sendMessage(ChatColor.RED + "No puedes invitarte a tí mismo!");
+                                        player.sendMessage(ChatColor.RED + "No puedes invitarte a ti mismo!");
                                         return true;
                                     }
-                                } else {
-                                    player.sendMessage(ChatColor.RED + "El jugador no está conectado!");
-                                    return true;
                                 }
                                 
                                 
@@ -249,6 +274,7 @@ public class Commands implements CommandExecutor {
                         
                     } else {
                         player.sendMessage(ChatColor.RED + "Sobran argumentos!");
+                        return true;
                     }
                     
                 } else {
@@ -279,6 +305,7 @@ public class Commands implements CommandExecutor {
                     if(args.length < 2){
                         
                         player.sendMessage(ChatColor.RED + "Faltan argumentos!");
+                        return true;
                         
                     } else if(args.length == 2) {
                             
@@ -296,7 +323,7 @@ public class Commands implements CommandExecutor {
                                 EventClass.plugin3.orgcfg.set("organizaciones." + args[1] + ".head", player.getName());
                                 EventClass.plugin3.orgcfg.set("organizaciones." + args[1] + ".players", player.getName());
                                 EventClass.plugin3.orgcfg.set("organizaciones." + args[1] + ".es", "sociedad");
-                                EventClass.plugin3.orgcfg.set("jugadores." + player.getName() + ".sociedad", args[2]);
+                                EventClass.plugin3.orgcfg.set("jugadores." + player.getName() + ".sociedad", args[1]);
                                 try {
                                     EventClass.plugin3.orgcfg.save(EventClass.plugin3.orgfile);
                                     Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Se ha guardado exitósamente organizations.yml");
@@ -328,32 +355,40 @@ public class Commands implements CommandExecutor {
                     } else {
                         
                         player.sendMessage(ChatColor.RED + "Sobran argumentos!");
+                        return true;
                         
                     }
                     
-                    return true;
-                    
-                }
-                
-                if(args[0].equalsIgnoreCase("invitar")) {
+                } else if(args[0].equalsIgnoreCase("invitar")) {
                     
                     
                     if(args.length < 2){
                         
                         player.sendMessage(ChatColor.RED + "Faltan argumentos!");
+                        return true;
                         
                     } else if(args.length == 2) {
                             
                             
                             
                             if (EventClass.plugin3.orgcfg.contains("jugadores." + player.getName() + ".sociedad")) {
-                                
-                                if (player.getServer().getPlayer(args[1]) != null) {
-                                    if (!args[2].equals(player.getName())) {
-                                        
-                                        if(!EventClass.plugin3.orgcfg.contains("jugadores." + args[1] + ".sociedad")) {
+                                Player target = player.getServer().getPlayer(args[1]);
+                                if (target == null) {
+                                    player.sendMessage(ChatColor.RED + "El jugador no está conectado!");
+                                    return true;
+                                } else {
+                                    if (!target.getName().equals(player.getName())) {
+                                    if(!EventClass.plugin3.orgcfg.contains("jugadores." + target.getName() + ".sociedad")) {
                                             
-                                            List<String> cfg = (List<String>)EventClass.plugin3.orgcfg.getList("jugadores." + args[1] + ".InvSoc");
+                                            List<String> cfg = (List<String>)EventClass.plugin3.orgcfg.getList("jugadores." + target.getName() + ".InvSoc");
+                                            int value = 0;
+                                            String sss = EventClass.plugin3.orgcfg.getString("jugadores." + player.getName() + ".sociedad");
+                                            for (String each : cfg) {
+                                                if (each.equals(sss)) {
+                                                    value = 1;
+                                                }
+                                            }
+                                            if (value == 0) {
                                             String soc = EventClass.plugin3.orgcfg.getString("jugadores." + player.getName() + ".sociedad");
                                             cfg.add(soc);
                                             EventClass.plugin3.getConfig().set("List", cfg);
@@ -362,21 +397,24 @@ public class Commands implements CommandExecutor {
                                             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Se ha guardado exitósamente organizations.yml");
                                             } catch (IOException e) {
                                             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "No ha podido guardar organizations.yml");
+                                            target.sendMessage(ChatColor.AQUA + "Has sido invitado a la sociedad " + ChatColor.GOLD + sss);
                                             }
-                                            player.sendMessage(ChatColor.AQUA + "Has invitado a " + args[1]);
                                             return true;
+                                            } else {
+                                                player.sendMessage(ChatColor.RED + "Este jugador ya tiene una invitación para tu sociedad!");
+                                                return true;
+                                            }
+                                            
+                                            
                                         } else {
                                             player.sendMessage(ChatColor.RED + "Este jugador ya pertenece a una sociedad!");
                                             return true;
                                         }
-                                        
+                                    
                                     } else {
-                                        player.sendMessage(ChatColor.RED + "No puedes invitarte a tí mismo!");
+                                        player.sendMessage(ChatColor.RED + "No puedes invitarte a ti mismo!");
                                         return true;
                                     }
-                                } else {
-                                    player.sendMessage(ChatColor.RED + "El jugador no está conectado!");
-                                    return true;
                                 }
                                 
                                 
@@ -386,8 +424,12 @@ public class Commands implements CommandExecutor {
                             }
                     } else {
                         player.sendMessage(ChatColor.RED + "Sobran argumentos!");
+                        return true;
                     }
                     
+                } else {
+                    player.sendMessage(ChatColor.RED + "Subcomando inválido!");
+                    return true;
                 }
                 
                 
@@ -410,6 +452,7 @@ public class Commands implements CommandExecutor {
                     if(args.length < 2){
                         
                         player.sendMessage(ChatColor.RED + "Faltan argumentos!");
+                        return true;
                         
                     } else if(args.length == 2) {
                             
@@ -427,7 +470,7 @@ public class Commands implements CommandExecutor {
                                 EventClass.plugin3.orgcfg.set("organizaciones." + args[1] + ".head", player.getName());
                                 EventClass.plugin3.orgcfg.set("organizaciones." + args[1] + ".players", player.getName());
                                 EventClass.plugin3.orgcfg.set("organizaciones." + args[1] + ".es", "gremio");
-                                EventClass.plugin3.orgcfg.set("jugadores." + player.getName() + ".gremio", args[2]);
+                                EventClass.plugin3.orgcfg.set("jugadores." + player.getName() + ".gremio", args[1]);
                                 try {
                                     EventClass.plugin3.orgcfg.save(EventClass.plugin3.orgfile);
                                     Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Se ha guardado exitósamente organizations.yml");
@@ -438,10 +481,9 @@ public class Commands implements CommandExecutor {
                             } else {
                                 
                                 player.sendMessage(ChatColor.RED + "No tienes dinero suficiente!");
+                                return true;
                                 
                             }
-                            
-                            return true;
                             
                     } else {
                             
@@ -459,55 +501,66 @@ public class Commands implements CommandExecutor {
                     } else {
                         
                         player.sendMessage(ChatColor.RED + "Sobran argumentos!");
+                        return true;
                         
                     }
                     
-                    return true;
-                    
-                }
-                
-                if(args[0].equalsIgnoreCase("invitar")) {
+                } else if(args[0].equalsIgnoreCase("invitar")) {
                     
                     
                     if(args.length < 2){
                         
                         player.sendMessage(ChatColor.RED + "Faltan argumentos!");
+                        return true;
                         
                     } else if(args.length == 2) {
                             
                             
                             
                             if (EventClass.plugin3.orgcfg.contains("jugadores." + player.getName() + ".gremio")) {
-                                
-                                if (player.getServer().getPlayer(args[1]) != null) {
-                                    if (!args[2].equals(player.getName())) {
-                                        
-                                        if(!EventClass.plugin3.orgcfg.contains("jugadores." + args[1] + ".gremio")) {
+                                Player target = player.getServer().getPlayer(args[1]);
+                                if (target == null) {
+                                    player.sendMessage(ChatColor.RED + "El jugador no está conectado!");
+                                    return true;
+                                } else {
+                                    if (!target.getName().equals(player.getName())) {
+                                    if(!EventClass.plugin3.orgcfg.contains("jugadores." + target.getName() + ".gremio")) {
                                             
-                                            List<String> cfg = (List<String>)EventClass.plugin3.orgcfg.getList("jugadores." + args[1] + ".InvGre");
-                                            String gre = EventClass.plugin3.orgcfg.getString("jugadores." + player.getName() + ".gremio");
-                                            cfg.add(gre);
+                                            List<String> cfg = (List<String>)EventClass.plugin3.orgcfg.getList("jugadores." + target.getName() + ".InvGre");
+                                            int value = 0;
+                                            String sss = EventClass.plugin3.orgcfg.getString("jugadores." + player.getName() + ".gremio");
+                                            for (String each : cfg) {
+                                                if (each.equals(sss)) {
+                                                    value = 1;
+                                                }
+                                            }
+                                            if (value == 0) {
+                                            String soc = EventClass.plugin3.orgcfg.getString("jugadores." + player.getName() + ".gremio");
+                                            cfg.add(soc);
                                             EventClass.plugin3.getConfig().set("List", cfg);
                                             try {
                                             EventClass.plugin3.orgcfg.save(EventClass.plugin3.orgfile);
                                             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Se ha guardado exitósamente organizations.yml");
                                             } catch (IOException e) {
                                             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "No ha podido guardar organizations.yml");
+                                            target.sendMessage(ChatColor.AQUA + "Has sido invitado a el gremio " + ChatColor.GOLD + sss);
                                             }
-                                            player.sendMessage(ChatColor.AQUA + "Has invitado a " + args[1]);
                                             return true;
+                                            } else {
+                                                player.sendMessage(ChatColor.RED + "Este jugador ya tiene una invitación para tu gremio!");
+                                                return true;
+                                            }
+                                            
+                                            
                                         } else {
                                             player.sendMessage(ChatColor.RED + "Este jugador ya pertenece a un gremio!");
                                             return true;
                                         }
-                                        
+                                    
                                     } else {
-                                        player.sendMessage(ChatColor.RED + "No puedes invitarte a tí mismo!");
+                                        player.sendMessage(ChatColor.RED + "No puedes invitarte a ti mismo!");
                                         return true;
                                     }
-                                } else {
-                                    player.sendMessage(ChatColor.RED + "El jugador no está conectado!");
-                                    return true;
                                 }
                                 
                                 
@@ -517,8 +570,12 @@ public class Commands implements CommandExecutor {
                             }
                     } else {
                         player.sendMessage(ChatColor.RED + "Sobran argumentos!");
+                        return true;
                     }
                     
+                } else {
+                    player.sendMessage(ChatColor.RED + "Subcomando inválido!");
+                    return true;
                 }
                 
                 
